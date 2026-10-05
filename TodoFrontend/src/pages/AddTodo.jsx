@@ -1,92 +1,89 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { addTodo } from '../services/api'
 
 function AddTodo() {
 
-    const [title, setTitle] = useState('')
-    const [status, setStatus] = useState('Pending')
+  const [title, setTitle] = useState('')
+  const [status, setStatus] = useState('Pending')
 
-    const navigate = useNavigate()
+  const navigate = useNavigate()
 
-    const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
 
-        e.preventDefault()
+    e.preventDefault()
 
-        if (!title.trim()) {
-            alert('Please enter a Todo title')
-            return
-        }
-
-        const newTodo = {
-            title: title,
-            status: status
-        }
-
-        try {
-
-            await axios.post(
-                'http://localhost:3000/todos',
-                newTodo
-            )
-
-            alert('Todo added successfully')
-
-            navigate('/todos')
-
-        } catch (error) {
-            console.log(error)
-            alert('Failed to add Todo')
-        }
+    if (!title.trim()) {
+      alert('Please enter a Todo title')
+      return
     }
 
-    return (
-        <div className='bg-gray-400 w-170 m-5 p-10 rounded-2xl'>
+    const newTodo = {
+      title: title,
+      status: status
+    }
 
-            <h1 className='text-2xl font-bold mb-5'>
-                Add New Todo
-            </h1>
+    try {
 
-            <form
-                onSubmit={handleSubmit}
-                className='flex flex-col gap-5'
-            >
+      await addTodo(newTodo)
 
-                <input
-                    type='text'
-                    placeholder='Enter To-do Title'
-                    className='border border-blue-500 rounded-xl pl-4 p-2'
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                />
+      alert('Todo added successfully')
 
-                <select
-                    className='border rounded-2xl p-2 w-50'
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                >
+      navigate('/todos')
 
-                    <option value='Pending'>
-                        Pending
-                    </option>
+    } catch (error) {
+      console.log(error)
+      alert('Failed to add Todo')
+    }
+  }
 
-                    <option value='Completed'>
-                        Completed
-                    </option>
+  return (
+    <div className='bg-gray-400 w-170 m-5 p-10 rounded-2xl'>
 
-                </select>
+      <h1 className='text-2xl font-bold mb-5'>
+        Add New Todo
+      </h1>
 
-                <button
-                    type='submit'
-                    className='bg-red-600 hover:bg-red-700 text-white rounded-2xl w-40 py-2'
-                >
-                    Add To-Do
-                </button>
+      <form
+        onSubmit={handleSubmit}
+        className='flex flex-col gap-5'
+      >
 
-            </form>
+        <input
+          type='text'
+          placeholder='Enter To-do Title'
+          className='border border-blue-500 rounded-xl pl-4 p-2'
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
 
-        </div>
-    )
+        <select
+          className='border rounded-2xl p-2 w-50'
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+        >
+
+          <option value='Pending'>
+            Pending
+          </option>
+
+          <option value='Completed'>
+            Completed
+          </option>
+
+        </select>
+
+        <button
+          type='submit'
+          className='bg-red-600 hover:bg-red-700 text-white rounded-2xl w-40 py-2'
+        >
+          Add To-Do
+        </button>
+
+      </form>
+
+    </div>
+  )
 }
 
 export default AddTodo

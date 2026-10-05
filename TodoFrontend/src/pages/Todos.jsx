@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
+import { getTodos, deleteTodo } from '../services/api'
 
 function Todos() {
 
   const [todos, setTodos] = useState([])
 
-  const getTodos = async () => {
+  const fetchTodos = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/todos')
+      const response = await getTodos()
       setTodos(response.data)
     } catch (error) {
       console.log(error)
@@ -16,7 +16,7 @@ function Todos() {
   }
 
   useEffect(() => {
-    getTodos()
+    fetchTodos()
   }, [])
 
   const handleDelete = async (id) => {
@@ -28,10 +28,13 @@ function Todos() {
     if (!confirmDelete) {
       return
     }
-    try {
-      await axios.delete(`http://localhost:3000/todos/${id}`)
 
-      setTodos(todos.filter((todo) => todo.id !== id))
+    try {
+      await deleteTodo(id)
+
+      setTodos(
+        todos.filter((todo) => todo.id !== id)
+      )
 
     } catch (error) {
       console.log(error)
@@ -55,7 +58,6 @@ function Todos() {
 
       </div>
 
-
       <div className='flex flex-wrap gap-5'>
 
         {todos.map((todo) => (
@@ -71,6 +73,7 @@ function Todos() {
 
             <p className='mt-2'>
               Status:
+
               <span
                 className={
                   todo.status === 'Completed'
@@ -81,7 +84,6 @@ function Todos() {
                 {todo.status}
               </span>
             </p>
-
 
             <div className='flex gap-5 mt-5'>
 

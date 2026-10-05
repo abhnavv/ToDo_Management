@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import axios from 'axios'
+import { getTodo, updateTodo } from '../services/api'
 
 function EditTodo() {
 
@@ -13,25 +13,21 @@ function EditTodo() {
 
   useEffect(() => {
 
-    const getTodo = async () => {
+    const fetchTodo = async () => {
 
       try {
 
-        const response = await axios.get(
-          `http://localhost:3000/todos/${id}`
-        )
+        const response = await getTodo(id)
 
         setTitle(response.data.title)
         setStatus(response.data.status)
 
       } catch (error) {
-
         console.log(error)
-
       }
     }
 
-    getTodo()
+    fetchTodo()
 
   }, [id])
 
@@ -52,10 +48,7 @@ function EditTodo() {
 
     try {
 
-      await axios.put(
-        `http://localhost:3000/todos/${id}`,
-        updatedTodo
-      )
+      await updateTodo(id, updatedTodo)
 
       alert('Todo updated successfully')
 
@@ -91,7 +84,6 @@ function EditTodo() {
           onChange={(e) => setTitle(e.target.value)}
         />
 
-
         <select
           className='border rounded-2xl p-2 w-50'
           value={status}
@@ -107,7 +99,6 @@ function EditTodo() {
           </option>
 
         </select>
-
 
         <button
           type='submit'
